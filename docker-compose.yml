@@ -1,0 +1,30 @@
+version: '3'
+services:
+  nginx:
+    container_name: dtdns
+    restart: always
+    privileged: true
+    #image: benyoo/uwsgi:centos7.python3.20190605
+    image: benyoo/uwsgi:alpine39.python3.20190605
+    network_mode: host
+    environment:
+    - TERM=linux
+    - REWRITE=wordpress
+    - DEFAULT_CONF=disable
+    #- DATE_TIME_ZONE=Etc/GMT+4
+    - DATE_TIME_ZONE=Asia/Shanghai
+    - SOCKET_PORT=8997
+    - SOCKET_IP=0.0.0.0
+    - SOCKET_FILE=/tmp/uwsgi-socket.sock
+    - PY_AUTORELOAD=3
+    - UWSGI_MASTER=True
+    - UWGSI_WORKERS=4    #默认自动计算
+    - UWSGI_PID_FILE=/tmp/uwsgi-master.pid
+    - UWSGI_MAX_REQUESTS=5000
+    - PIP_INSTALL="django-background-tasks requests telegram sqlalchemy"
+    volumes:
+    #- /etc/localtime:/etc/localtime:ro
+    - /etc/hosts:/etc/hosts:rw
+    - /data/wwwroot:/data/wwwroot:rw
+    - /data/wwwlogs:/data/wwwlogs:rw
+    - /usr/local/nginx/conf:/usr/local/nginx/conf:rw
